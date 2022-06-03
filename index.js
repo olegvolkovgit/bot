@@ -29,7 +29,8 @@ bot.on("callback_query", () => { })
 // security
 // TODO input regexp control, 
 // chat clearing, 
-// user blocking
+// user blocking,
+// add menu explanation - what is collaboration
 
 async function startAction(msg) {
     user = {
