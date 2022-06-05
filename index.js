@@ -6,7 +6,7 @@ const userModel = require('./model');
 require('dotenv').config();
 
 let language;
-let messageCounter;
+let messageCounter = 0;
 let chatId;
 let user;
 let timer = 90;
@@ -24,7 +24,7 @@ bot.action("disagree", msg => { msg.deleteMessage() })
 bot.action("finish", clearMessage.bind(this));
 bot.action("delete", clearMessage.bind(this));
 bot.on("message", onMessageForCollaborant.bind(this));
-bot.on("callback_query", () => { })
+bot.on("callback_query", (e) => { console.log(e) });
 
 // security
 // TODO input regexp control, 
@@ -50,52 +50,73 @@ async function startAction(msg) {
 }
 
 async function onMessageForCollaborant(msg) {
-    messages.push(msg);
+    try {
+        messageCounter++
+        if (messageCounter > 2) {
+            // warning user about spam
+        }
+        messages.push(msg);
 
-    await msg.replyWithHTML(dialog.thanks[language], Markup.inlineKeyboard([
-        [
-            Markup.button.callback(dialog.endChat[language], "finish")
-        ]
-    ]));
-    await msg.deleteMessage();
+        await msg.replyWithHTML(dialog.thanks[language], Markup.inlineKeyboard([
+            [
+                Markup.button.callback(dialog.endChat[language], "finish")
+            ]
+        ]));
+        await msg.deleteMessage();
+    } catch (e) {
+        console.log(e)
+    }
+
 }
 
 async function uaAction(msg) {
-    language = "ua";
-    messages.push(msg);
-    await msg.answerCbQuery();
-    await msg.replyWithHTML(dialog.set_collaborant[language], Markup.inlineKeyboard([
-        [
-            Markup.button.callback(dialog.agree[language], "agreement"),
-            Markup.button.callback(dialog.disagree[language], "disagree")
-        ]
-    ]));
-    await msg.deleteMessage();
+    try {
+        language = "ua";
+        messages.push(msg);
+        await msg.answerCbQuery();
+        await msg.replyWithHTML(dialog.set_collaborant[language], Markup.inlineKeyboard([
+            [
+                Markup.button.callback(dialog.agree[language], "agreement"),
+                Markup.button.callback(dialog.disagree[language], "disagree")
+            ]
+        ]));
+        await msg.deleteMessage();
+    } catch (e) {
+        console.log(e)
+    }
 }
 
 async function ruAction(msg) {
-    language = "ru";
-    messages.push(msg);
-    await msg.answerCbQuery();
-    await msg.replyWithHTML(dialog.set_collaborant[language], Markup.inlineKeyboard([
-        [
-            Markup.button.callback(dialog.agree[language], "agreement"),
-            Markup.button.callback(dialog.disagree[language], "disagree")
-        ]
-    ]));
-    await msg.deleteMessage();
+    try {
+        language = "ru";
+        messages.push(msg);
+        await msg.answerCbQuery();
+        await msg.replyWithHTML(dialog.set_collaborant[language], Markup.inlineKeyboard([
+            [
+                Markup.button.callback(dialog.agree[language], "agreement"),
+                Markup.button.callback(dialog.disagree[language], "disagree")
+            ]
+        ]));
+        await msg.deleteMessage();
+    } catch (e) {
+        console.log(e);
+    }
 }
 
 async function clearMessage(msg) {
-    hideButton = true;
-    await msg.deleteMessage();
+    try {
+        hideButton = true;
+        await msg.deleteMessage();
+    } catch (e) {
+        console.log(e);
+    }
 }
 
-async function waitTime(time) {
-    return new Promise((resolve) => {
-        setTimeout(() => resolve(), time);
-    });
-}
+// async function waitTime(time) {
+//     return new Promise((resolve) => {
+//         setTimeout(() => resolve(), time);
+//     });
+// }
 
 bot.launch()
 
