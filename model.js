@@ -6,3 +6,4 @@ const user = sequielize.define(user, {
     chatId: { type: DataTypes.STRING, unique: true },
     message: { Type: DataTypes.STRING },
 });
+

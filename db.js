@@ -10,4 +10,3 @@ module.exports = new Sequalize(
         dialect: "postgres"
     }
 )
-

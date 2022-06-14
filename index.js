@@ -5,22 +5,24 @@ import dialog from './answers.js';
 // import userModel from './model';
 
 let language;
+let messagesAreAllowed;
 let messageCounter = 0;
 let user;
-let chatId
-let timer = 90;
-let nonCyrillicLanguageRegex = new RegExp(/a-zA-Z/g);
+let userId
+let isUserBot;
+let receiver;
+
+const UA_UNICODE_REGEX = /\u0410\u0430\u0411\u0431\u0412\u0432\u0413\u0433\u0490\u0491\u0414\u0434\u0415\u0435\u0404\u0454\u0416\u0436\u0417\u0437\u0418\u0438\u0406\u0456\u0407\u0457\u0419\u0439\u041A\u043A\u041B\u043B\u041C\u043C\u041D\u043D\u041E\u043E\u041F\u043F\u0420\u0440\u0421\u0441\u0422\u0442\u0423\u0443\u0424\u0444\u0425\u0445\u0426\u0446\u0427\u0447\u0428\u0448\u0429\u0449\u042C\u044C\u042E\u044E\u042F\u044F/g
+const ru_UNOCODE_REGEX = /\u0410\u0430\u0411\u0431\u0412\u0432\u0413\u0433\u0414\u0434\u0415\u0435\u0401\u0451\u0416\u0436\u0417\u0437\u0418\u0438\u0419\u0439\u041A\u043A\u041B\u043B\u041C\u043C\u041D\u043D\u041E\u043E\u041F\u043F\u0420\u0440\u0421\u0441\u0422\u0442\u0423\u0443\u0424\u0444\u0425\u0445\u0426\u0446\u0427\u0447\u0428\u0448\u0429\u0449\u042A\u044A\u042B\u044B\u042C\u044C\u042D\u044D\u042E\u044E\u042F\u044F/g
 const bot = new Telegraf(process.env.BOT_TOKEN);
 
 bot.start(startAction);
-bot.telegram.setChatMenuButton({ chat_id: chatId, menu_button: "restart" });
-// bot.restart((e) => { console.log(e) });
+// bot.on("callback_query", startAction);\
 bot.on("message", onMessageForCollaborant.bind(this));
 bot.action("ua", uaAction.bind(this));
 bot.action("ru", ruAction.bind(this));
 bot.action("finish", endChatSendAdvise);
 bot.action("forward", forward);
-
 
 // security
 // TODO input regexp control, 
@@ -29,13 +31,11 @@ bot.action("forward", forward);
 // add menu explanation - what is collaboration
 
 async function startAction(msg) {
-    user = {
-        first_name: msg.message.from.first_name,
-        last_name: msg.message.from.last_name,
-        username: msg.message.from.username,
-    }
-    chatId = msg.chat.id;
-    console.log(chatId)
+    user = JSON.stringify(msg?.update?.message?.from.username);
+    userId = JSON.stringify(msg?.update?.message?.from.id);
+    isUserBot = JSON.stringify(msg?.update?.message?.from.is_bot);
+    messageCounter = 0;
+    messagesAreAllowed = true;
     await msg.reply(dialog.language.general, Markup.inlineKeyboard([
         [
             Markup.button.callback(dialog.language.positions.ua, "ua"),
@@ -47,7 +47,15 @@ async function startAction(msg) {
 async function onMessageForCollaborant(msg) {
     try {
         messageCounter++
+        receiver = process.env.postBox;
+
+        if ((msg.message.text || msg.Context.update.message.text) && messagesAreAllowed) {
+            let userMessage = msg.message.text || msg.update.message.text;
+            await msg.telegram.sendMessage(receiver, "user: { " + user + " }\n" + "user id: { " + userId + " }" + "\n" + "is user bot { " + isUserBot + " }" + "\n" + " USER MESSAGE: \n " + userMessage);
+        }
+
         if (messageCounter > 2) {
+            messagesAreAllowed = false;
             return stopMessaging(msg);
         }
 
@@ -60,7 +68,6 @@ async function onMessageForCollaborant(msg) {
     } catch (e) {
         console.log(e)
     }
-
 }
 
 async function forward(msg) {
@@ -74,6 +81,7 @@ async function forward(msg) {
 async function endChatSendAdvise(msg) {
     try {
         await msg.reply(dialog.advise[language]);
+        //https://api.telegram.org/bot[BOT_API_KEY]/sendMessage?chat_id=[MY_CHANNEL_NAME]&text=[MY_MESSAGE_TEXT]
     } catch (e) {
         console.log(e);
     }
@@ -110,11 +118,11 @@ async function ruAction(msg) {
     }
 }
 
-// async function waitTime(time) {
-//     return new Promise((resolve) => {
-//         setTimeout(() => resolve(), time);
-//     });
-// }
+function setUser(data) {
+    user = JSON.stringify(data);
+    return user;
+}
+
 
 bot.launch()
 
