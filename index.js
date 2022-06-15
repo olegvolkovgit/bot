@@ -17,8 +17,10 @@ const ru_UNOCODE_REGEX = /\u0410\u0430\u0411\u0431\u0412\u0432\u0413\u0433\u0414
 const bot = new Telegraf(process.env.BOT_TOKEN);
 
 bot.start(startAction);
-// bot.on("callback_query", startAction);\
+bot.command('command1', startAction);
+
 bot.on("message", onMessageForCollaborant.bind(this));
+
 bot.action("ua", uaAction.bind(this));
 bot.action("ru", ruAction.bind(this));
 bot.action("finish", endChatSendAdvise);
@@ -36,6 +38,7 @@ async function startAction(msg) {
     isUserBot = JSON.stringify(msg?.update?.message?.from.is_bot);
     messageCounter = 0;
     messagesAreAllowed = true;
+
     await msg.reply(dialog.language.general, Markup.inlineKeyboard([
         [
             Markup.button.callback(dialog.language.positions.ua, "ua"),
@@ -46,6 +49,19 @@ async function startAction(msg) {
 
 async function onMessageForCollaborant(msg) {
     try {
+        console.log(msg)
+
+        if (msg?.update &&
+            (msg?.update?.message?.sticker ||
+                msg?.update?.message?.video ||
+                msg?.update?.message?.document ||
+                msg?.update?.message?.file ||
+                msg?.update?.message?.sticker ||
+                msg?.update?.message?.animation ||
+                msg?.update?.message?.voice)) {
+            msg.deleteMessage(msg.update.message.message_id);
+        }
+
         messageCounter++
         receiver = process.env.postBox;
 
@@ -81,7 +97,7 @@ async function forward(msg) {
 async function endChatSendAdvise(msg) {
     try {
         await msg.reply(dialog.advise[language]);
-        //https://api.telegram.org/bot[BOT_API_KEY]/sendMessage?chat_id=[MY_CHANNEL_NAME]&text=[MY_MESSAGE_TEXT]
+        !messagesAreAllowed && msg.deleteMessage(msg.update.message.message_id);
     } catch (e) {
         console.log(e);
     }
