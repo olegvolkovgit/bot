@@ -36,6 +36,7 @@ async function startAction(msg) {
     user = JSON.stringify(msg?.update?.message?.from.username);
     userId = JSON.stringify(msg?.update?.message?.from.id);
     isUserBot = JSON.stringify(msg?.update?.message?.from.is_bot);
+
     messageCounter = 0;
     messagesAreAllowed = true;
 
