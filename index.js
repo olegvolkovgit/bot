@@ -53,8 +53,8 @@ async function onMessageForCollaborant(msg) {
         if (msg?.update &&
             (msg?.update?.message?.sticker ||
                 msg?.update?.message?.video ||
-                msg?.update?.message?.document ||
-                msg?.update?.message?.file ||
+                //msg?.update?.message?.document ||
+                //msg?.update?.message?.file ||
                 msg?.update?.message?.sticker ||
                 msg?.update?.message?.animation ||
                 msg?.update?.message?.voice)) {
