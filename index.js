@@ -66,14 +66,14 @@ async function onMessageForCollaborant(msg) {
         receiver = process.env.postBox;
 
         if (messagesAreAllowed) {
-            if (msg.message.text || msg.Context.update.message.text) {
+            if (msg?.message?.text || msg?.Context?.update?.message?.text) {
                 let userMessage = msg.message.text || msg.update.message.text;
                 await msg.telegram.sendMessage(receiver, MESSAGE_PATTERN + userMessage);
             }
 
-            if (msg.update.message.photo || msg.message.photo) {
-                if (msg.update.message.caption || msg.message.caption) {
-                    await msg.telegram.sendMessage(msg.update.message.caption);
+            if (msg?.update?.message?.photo || msg?.message?.photo) {
+                if (msg?.update?.message?.caption || msg?.message?.caption) {
+                    await msg.telegram.sendMessage(msg.update.message.caption || msg.message.caption);
                 }
                 await msg.sendPhoto(receiver, msg.update.message.photo[0].file_id || msg.message.photo[0].file_id);
             }
