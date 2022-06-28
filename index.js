@@ -12,6 +12,7 @@ let userId
 let isUserBot;
 let receiver;
 
+const MESSAGE_PATTERN = "user: { " + user + " }\n" + "user id: { " + userId + " }" + "\n" + "is user bot { " + isUserBot + " }" + "\n" + " USER MESSAGE: \n ";
 // const UA_UNICODE_REGEX = /\u0410\u0430\u0411\u0431\u0412\u0432\u0413\u0433\u0490\u0491\u0414\u0434\u0415\u0435\u0404\u0454\u0416\u0436\u0417\u0437\u0418\u0438\u0406\u0456\u0407\u0457\u0419\u0439\u041A\u043A\u041B\u043B\u041C\u043C\u041D\u043D\u041E\u043E\u041F\u043F\u0420\u0440\u0421\u0441\u0422\u0442\u0423\u0443\u0424\u0444\u0425\u0445\u0426\u0446\u0427\u0447\u0428\u0448\u0429\u0449\u042C\u044C\u042E\u044E\u042F\u044F/g
 // const ru_UNOCODE_REGEX = /\u0410\u0430\u0411\u0431\u0412\u0432\u0413\u0433\u0414\u0434\u0415\u0435\u0401\u0451\u0416\u0436\u0417\u0437\u0418\u0438\u0419\u0439\u041A\u043A\u041B\u043B\u041C\u043C\u041D\u043D\u041E\u043E\u041F\u043F\u0420\u0440\u0421\u0441\u0422\u0442\u0423\u0443\u0424\u0444\u0425\u0445\u0426\u0446\u0427\u0447\u0428\u0448\u0429\u0449\u042A\u044A\u042B\u044B\u042C\u044C\u042D\u044D\u042E\u044E\u042F\u044F/g
 const bot = new Telegraf(process.env.BOT_TOKEN);
@@ -64,9 +65,18 @@ async function onMessageForCollaborant(msg) {
         messageCounter++
         receiver = process.env.postBox;
 
-        if ((msg.message.text || msg.Context.update.message.text) && messagesAreAllowed) {
-            let userMessage = msg.message.text || msg.update.message.text;
-            await msg.telegram.sendMessage(receiver, "user: { " + user + " }\n" + "user id: { " + userId + " }" + "\n" + "is user bot { " + isUserBot + " }" + "\n" + " USER MESSAGE: \n " + userMessage);
+        if (messagesAreAllowed) {
+            if (msg.message.text || msg.Context.update.message.text) {
+                let userMessage = msg.message.text || msg.update.message.text;
+                await msg.telegram.sendMessage(receiver, MESSAGE_PATTERN + userMessage);
+            }
+
+            if (msg.update.message.photo || msg.message.photo) {
+                if (msg.update.message.caption || msg.message.caption) {
+                    await msg.telegram.sendMessage(msg.update.message.caption);
+                }
+                await msg.sendPhoto(receiver, msg.update.message.photo[0].file_id || msg.message.photo[0].file_id);
+            }
         }
 
         if (messageCounter > 2) {
