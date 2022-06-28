@@ -71,11 +71,14 @@ async function onMessageForCollaborant(msg) {
                 await msg.telegram.sendMessage(receiver, MESSAGE_PATTERN + userMessage);
             }
 
-            if (msg?.update?.message?.photo || msg?.message?.photo) {
-                if (msg?.update?.message?.caption || msg?.message?.caption) {
-                    await msg.telegram.sendMessage(msg.update.message.caption || msg.message.caption);
+            if (msg?.update?.message?.photo || msg?.message?.photo || msg?.Context?.update?.message?.photo) {
+                let photo = msg?.update?.message?.photo || msg?.message?.photo || msg?.Context?.update?.message?.photo;
+                if (photo) {
+                    if (msg.update.message.caption) {
+                        msg.telegram.sendMessage(receiver, msg.update.message.caption);
+                    }
+                    msg.telegram.sendPhoto(receiver, photo[0].file_id);
                 }
-                await msg.telegram.sendPhoto(receiver, msg.update.message.photo[0].file_id || msg.message.photo[0].file_id);
             }
         }
 
