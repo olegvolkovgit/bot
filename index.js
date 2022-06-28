@@ -75,7 +75,7 @@ async function onMessageForCollaborant(msg) {
                 if (msg?.update?.message?.caption || msg?.message?.caption) {
                     await msg.telegram.sendMessage(msg.update.message.caption || msg.message.caption);
                 }
-                await msg.sendPhoto(receiver, msg.update.message.photo[0].file_id || msg.message.photo[0].file_id);
+                await msg.telegram.sendPhoto(receiver, msg.update.message.photo[0].file_id || msg.message.photo[0].file_id);
             }
         }
 
