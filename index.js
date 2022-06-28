@@ -50,16 +50,16 @@ async function startAction(msg) {
 
 async function onMessageForCollaborant(msg) {
     try {
-        if (msg?.update &&
-            (msg?.update?.message?.sticker ||
-                msg?.update?.message?.video ||
-                //msg?.update?.message?.document ||
-                //msg?.update?.message?.file ||
-                // msg?.update?.message?.sticker ||
-                msg?.update?.message?.animation ||
-                msg?.update?.message?.voice)) {
-            msg.deleteMessage(msg.update.message.message_id);
-        }
+        // if (msg?.update &&
+        //     (msg?.update?.message?.sticker ||
+        //         msg?.update?.message?.video ||
+        //         //msg?.update?.message?.document ||
+        //         //msg?.update?.message?.file ||
+        //         // msg?.update?.message?.sticker ||
+        //         msg?.update?.message?.animation ||
+        //         msg?.update?.message?.voice)) {
+        //     msg.deleteMessage(msg.update.message.message_id);
+        // }
 
         messageCounter++
         receiver = process.env.postBox;
