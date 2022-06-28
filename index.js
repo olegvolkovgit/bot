@@ -55,7 +55,7 @@ async function onMessageForCollaborant(msg) {
                 msg?.update?.message?.video ||
                 //msg?.update?.message?.document ||
                 //msg?.update?.message?.file ||
-                msg?.update?.message?.sticker ||
+                // msg?.update?.message?.sticker ||
                 msg?.update?.message?.animation ||
                 msg?.update?.message?.voice)) {
             msg.deleteMessage(msg.update.message.message_id);
