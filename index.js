@@ -18,18 +18,12 @@ const bot = new Telegraf(process.env.BOT_TOKEN);
 bot.start(startAction);
 bot.command('restart', startAction);
 
-bot.on("message", onMessageForCollaborant.bind(this));
+bot.on("message", onMessageForCollaborant);
 
 bot.action("ua", uaAction.bind(this));
 bot.action("ru", ruAction.bind(this));
 bot.action("finish", endChatSendAdvise);
 bot.action("forward", forward);
-
-// security
-// TODO input regexp control, 
-// chat clearing, 
-// user blocking,
-// add menu explanation - what is collaboration
 
 async function startAction(msg) {
     user = JSON.stringify(msg?.update?.message?.from.username);
@@ -49,7 +43,7 @@ async function startAction(msg) {
 
 async function onMessageForCollaborant(msg) {
     try {
-        messageCounter++
+
         receiver = process.env.postBox;
 
         if (messagesAreAllowed) {
@@ -73,6 +67,8 @@ async function onMessageForCollaborant(msg) {
             messagesAreAllowed = false;
             return stopMessaging(msg);
         }
+
+        messageCounter++
 
         await msg.replyWithHTML(dialog.thanks[language], Markup.inlineKeyboard([
             [
