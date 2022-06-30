@@ -20,8 +20,8 @@ bot.command('restart', startAction);
 
 bot.on("message", onMessageForCollaborant);
 
-bot.action("ua", uaAction.bind(this));
-bot.action("ru", ruAction.bind(this));
+bot.action("ua", uaAction);
+bot.action("ru", ruAction);
 bot.action("finish", endChatSendAdvise);
 bot.action("forward", forward);
 
