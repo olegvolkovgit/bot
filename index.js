@@ -23,7 +23,11 @@ bot.action("finish", endChatSendAdvise);
 bot.action("forward", forward);
 
 async function startAction(msg) {
-    user = JSON.stringify(msg?.update?.message?.from?.username) || JSON.stringify(msg?.message?.from?.username) || JSON.stringify(msg?.message?.chat?.username) || JSON.stringify(msg?.update?.message?.chat?.username) || JSON.stringify(msg?.update?.message?.sender_chat?.username);
+    user = JSON.stringify(msg?.update?.message?.from?.username) ||
+        JSON.stringify(msg?.message?.from?.username) ||
+        JSON.stringify(msg?.message?.chat?.username) ||
+        JSON.stringify(msg?.update?.message?.chat?.username) ||
+        JSON.stringify(msg?.update?.message?.sender_chat?.username);
     userId = JSON.stringify(msg?.update?.message?.from.id);
     isUserBot = JSON.stringify(msg?.update?.message?.from.is_bot);
 
