@@ -2,7 +2,7 @@
   "author": "Cyber_Army_of_Ukraine",
   "type": "module",
   "scripts": {
-    "dev": "nodemon index.js"
+    "dev": "nodemon punisher_index.js"
   },
   "dependencies": {
     "dotenv": "^16.0.1",
