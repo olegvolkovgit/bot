@@ -12,6 +12,7 @@ let receiver;
 
 const bot = new Telegraf(process.env.BOT_TOKEN);
 
+//@welcome_toUkraine_SUKA 
 bot.start(startAction);
 bot.command('restart', startAction);
 
